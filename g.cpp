@@ -37,9 +37,9 @@ void fapu(vector<vector<int> > g,int u, int d, bool visited[],
         for (int i = 1; i<path_index; i++){
 
             int pp=path[i];
-          paths[y][i]=pp;  cout <<"aaaaa:  "<< paths[y][i] << " "; }
-        cout << endl;y=y+1;
-        *k = y;std::cout << y << '\n';
+          paths[y][i+1]=pp;  /*cout <<"aaaaa:  "<< paths[y][i] << " ";*/ }
+        y=y+1;
+        *k = y;//std::cout << y << '\n';
 
     }
     else // If current vertex is not destination
@@ -72,17 +72,16 @@ void fap(vector<vector<int> > g,int s, int d,int **paths,int n,vector<int>  &f)
     // Initialize all vertices as not visited
     for (int i = 1; i < n; i++)
         visited[i] = false;
-    int k=0;
+    int k=1;
     // Call the recursive helper function to print all paths
     fapu(g,s, d, visited, paths,path, path_index,&k,n,f);
-    std::cout << "kakakakakaka" << '\n';
+    //std::cout << "kakakakakaka" << '\n';
     for(int i=1;i<n*2-2;i++)
     {
-      for(int j=1;j<n*2-2;j++)
-      {//std::cout << "asdasdasdasdasdasdasd" << '\n';
-        cout<<paths[i][j]<<" ";
-      }
-      cout<<endl;
+
+        if(paths[i][2]>0){cout<<i<<endl;paths[i][1]=s;}
+
+      //cout<<endl;
     }
 }
 /* Returns true if there is a path from source 's' to sink 't' in
@@ -90,28 +89,28 @@ void fap(vector<vector<int> > g,int s, int d,int **paths,int n,vector<int>  &f)
 
 // Driver program to test above functions
 
-vector<int> av_paths(int **paths,int n,int s,int d,int *lro,int *lre,int cts)
+vector<int> av_paths(int **paths,int n,int s,int d,int *lro,int *lre,int cts,int src,int brc,int sr,int br)
 {
-  int ctp;int oc,ec;vector<int> ap;int c=0;oc=0;ec=0;
+  int ctp;int oc,rc,ec;vector<int> ap;int c=0;rc=0;oc=0;ec=0;
   for(int i=1;i<2*n-2;i++)
-  {ctp=cts;cout<<i<<"|||"<<endl;oc=0;ec=0;
+  {ctp=cts;oc=0;ec=0;rc=0;
     if(paths[i][1]!=0)
-    {std::cout << "m0" << '\n';
+    {//std::cout << "m0" << '\n';
       for(int j=1;(j<2*n-2)&&(paths[i][j]!=0);j++)
-      {std::cout << "ctp:"<<ctp << '\n';
-        if((ctp+1)%2)
-        { std::cout << "m1" << '\n';
+      {
+        if(ctp%2)
+        {// std::cout << "m1" << '\n';
           for(int k=0;lro[k]!=0;k++)
-          {std::cout << lro[k] << ' ';
+          {
             if(paths[i][j]==lro[k])
-            {std::cout << "m11" << '\n';
+            {//std::cout <<ctp<<":::"<<lro[k]<< "m11" << '\n';
                 oc=1;
                 break;
             }
           }
         }
         else
-        {std::cout << "m2" << '\n';
+        {//std::cout << "m2" << '\n';
           for(int k=0;lre[k]!=0;k++)
           {
             if(paths[i][j]==lre[k])
@@ -121,21 +120,39 @@ vector<int> av_paths(int **paths,int n,int s,int d,int *lro,int *lre,int cts)
             }
           }
         }
-        if((oc==1)||(ec==1)){std::cout << oc<<"/* message */"<<ec << '\n';break;}
+        if(src)
+        {
+
+            if((paths[i][j+1]!=0)&&(paths[i][j]==sr))
+            {
+                rc=1;
+                break;
+            }
+
+        }
+        if(brc)
+        {
+          if((paths[i][j+1]!=0)&&(paths[i][j]==br))
+          {
+              rc=1;
+              break;
+          }
+        }
+        if((rc==1)||(oc==1)||(ec==1)){break;}
         ctp++;
       }
-      cout<<i<<"+++"<<endl;
-      if((oc==0)&&(ec==0))
+
+      if((rc==0)&&(oc==0)&&(ec==0))
       {
-        cout<<i<<"---"<<endl;std::cout <<c<< "mmm" << '\n';
-        ap.push_back(i);std::cout << ap.front() << '\n';
+
+        ap.push_back(i);
       }
     }
 
   }
-  std::cout << c<<"alalal" << '\n';
-  for(int l=0;l<ap.size();l++){cout<<ap[l]<<" ";}
-  std::cout << "alalal" << '\n';
+  //std::cout << c<<"alalal" << '\n';
+  //for(int l=0;l<ap.size();l++){cout<<ap[l]<<" ";}
+  //std::cout << "alalal" << '\n';
   return ap;
 }
 
@@ -143,7 +160,7 @@ vector<int> av_paths(int **paths,int n,int s,int d,int *lro,int *lre,int cts)
 
 int main()
 {
-  int ammo,sr,kr,br;
+  int ammo,sr,kr,br;int src,brc;src=1;brc=1;
   int nor,noar;
   int a,b,c,d;
   ifstream input("the3inp.txt");
@@ -217,18 +234,53 @@ std::cout << "/* message */" << '\n';
   // Create an array to store paths
   int *path = new int[nor+1];*/
   int path_index = 0; // Initialize path[] as empty
-  int k=0;
+  int k,lc;k=0;lc=0;
   // Initialize all vertices as not visited
   /*for (int i = 1; i < nor+1; i++)
       visited[i] = false;
   *///fap(graph,1,6,p,nor+1,f);
   vector<int> ap;int cts=0;
-  fap(graph,1, 7,  p,nor+1,f);
-  ap=av_paths(p,nor+1,1,7,lro,lre,cts);
-  std::cout << "/* message */" << '\n';
+  std::cout << "/* phase0 */" << '\n';
+  fap(graph,1, 3,  p,nor+1,f);
+  ap=av_paths(p,nor+1,1,3,lro,lre,cts,src,brc,sr,br);
+  for(int i=1;i<2*nor;i++)
+  {
+    for(int j=1;j<2*nor;j++)
+    {//std::cout << "asdasdasdasdasdasdasd" << '\n';
+      cout<<p[i][j]<<" ";
+    }
+    cout<<endl;
+  }
+  src=0;
+  std::cout << "ap0" << '\n';
   for(int t=0;t<ap.size();t++){std::cout << ap[t]<<" ";}cout<<endl;
-  for(int i=0;i<5;i++){cout<<f[i]<<" ";}
-  cout<<endl;
+  for(int i=1;i<2*nor;i++){if(p[i][1]==0){break;}for(int j=1;j<2*nor;j++){p[i][j]=0;}}
+  std::cout << "/* phase1 */" << '\n';
+
+  fap(graph,3, 4,  p,nor+1,f);
+  ap=av_paths(p,nor+1,3,4,lro,lre,cts,src,brc,sr,br);
+  for(int i=1;i<2*nor;i++)
+  {
+    for(int j=1;j<2*nor;j++)
+    {//std::cout << "asdasdasdasdasdasdasd" << '\n';
+      cout<<p[i][j]<<" ";
+    }
+    cout<<endl;
+  }
+  std::cout << "ap1" << '\n';
+  for(int t=0;t<ap.size();t++){std::cout << ap[t]<<" ";}cout<<endl;
+
+  brc=0;
+  std::cout << "/* phase2 */" << '\n';
+
+  for(int i=1;i<2*nor;i++){if(p[i][1]==0){break;}for(int j=1;j<2*nor;j++){p[i][j]=0;}}
+  fap(graph,4, 6,  p,nor+1,f);
+  ap=av_paths(p,nor+1,4,6,lro,lre,cts,src,brc,sr,br);
+
+  std::cout << "ap2" << '\n';
+
+  for(int t=0;t<ap.size();t++){std::cout << ap[t]<<" ";}cout<<endl;
+
 
   for(int i=1;i<2*nor;i++)
   {
