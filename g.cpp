@@ -46,7 +46,7 @@ void fapu(vector<vector<int> > g,int u, int d, bool visited[],
     {
         // Recur for all the vertices adjacent to current vertex
         for (int i = 1; i <n; ++i)
-            if (g[u][i]>0 & visited[i]==false){
+            if (g[u][i]!=0 & visited[i]==false){
                 fapu(g,i, d, visited,paths, path, path_index,k,n,f);
 
               }
@@ -79,7 +79,7 @@ void fap(vector<vector<int> > g,int s, int d,int **paths,int n,vector<int>  &f)
     for(int i=1;i<n*2-2;i++)
     {
 
-        if(paths[i][2]>0){cout<<i<<endl;paths[i][1]=s;}
+        if(paths[i][2]!=0){paths[i][1]=s;}
 
       //cout<<endl;
     }
@@ -156,7 +156,25 @@ vector<int> av_paths(int **paths,int n,int s,int d,int *lro,int *lre,int cts,int
   return ap;
 }
 
-
+int mp(vector<vector<int> > g,int **paths,vector<int> ap,int n,int *cts,int *ar)
+{int mv,mi,r,s;mv=99999;mi=0;r=0;std::cout << "mpmpmp" << '\n';int ai=0;int ac=0;int aic=0;int aicc=0;
+  for(int i=0;i<ap.size();i++)
+  {s=0;r=0;ac=0;
+    for(int j=1;paths[ap[i]][j]!=0;j++)
+    {cout<<"papij:"<<paths[ap[i]][j]<<" ";
+      if(ar[paths[ap[i]][j+1]]>0)
+      {
+        cout<<"ac"<<paths[ap[i]][j+1]<<" ";
+      s-=ar[paths[ap[i]][j+1]];ac=1;aic=paths[ap[i]][j+1];
+      }
+      s+=g[paths[ap[i]][j]][paths[ap[i]][j+1]];r++;
+    }
+    cout<<i<<"+++"<<s<<endl;
+    if(s<mv){*cts+=r;mv=s;mi=ap[i];cout<<mv<<"|"<<mi<<endl;if(ac==1){ai=ap[i];aicc=aic;}}
+  }
+  if(mi==ai){std::cout << "turturutur" << '\n'; ar[aicc]=0;}
+  return mv;
+}
 
 int main()
 {
@@ -220,13 +238,22 @@ std::cout << "/* message */" << '\n';
   }
   input>>noar;
 
-  int ar[noar+1];
+  int ar[nor+1];
+  for(int i=0;i<nor+1;i++){ar[i]=0;}
   for(int i=0;i<noar;i++)
-  {std::cout << "/* message */" << '\n';
+  {std::cout << "/* message */aaaarrrr" << '\n';
     input>>a>>b;
     ar[a]=b;
+    /*for(int j=1;j<nor+1;j++)
+    {
+      if(graph[j][a]!=0)
+      {
+      graph[j][a]=graph[j][a]-b;
+      }
+    }*/
 
   }
+  for(int i=0;i<nor+1;i++){for(int j=0;j<nor+1;j++){cout<<graph[i][j]<<" ";}cout<<endl;}
   int u,v;int o=0;
   /*int parent[nor+1];
   bool *visited = new bool[nor+1];
@@ -252,9 +279,22 @@ std::cout << "/* message */" << '\n';
     cout<<endl;
   }
   src=0;
+  for(int i=0;i<nor+1;i++){cout<<ar[i]<<' ';}cout<<endl;
+  cout<<"ppppppp0:"<<mp(graph,p,ap,nor+1,&cts,ar)<<endl;
+  for(int i=0;i<nor+1;i++){cout<<ar[i]<<' ';}cout<<endl;
   std::cout << "ap0" << '\n';
   for(int t=0;t<ap.size();t++){std::cout << ap[t]<<" ";}cout<<endl;
   for(int i=1;i<2*nor;i++){if(p[i][1]==0){break;}for(int j=1;j<2*nor;j++){p[i][j]=0;}}
+  cout<<"CTS:"<<cts<<endl;
+
+
+
+
+
+
+
+
+
   std::cout << "/* phase1 */" << '\n';
 
   fap(graph,3, 4,  p,nor+1,f);
@@ -267,15 +307,22 @@ std::cout << "/* message */" << '\n';
     }
     cout<<endl;
   }
+  for(int i=0;i<nor+1;i++){cout<<ar[i]<<' ';}cout<<endl;
+  cout<<"ppppppp1:"<<mp(graph,p,ap,nor+1,&cts,ar)<<endl;
+  for(int i=0;i<nor+1;i++){cout<<ar[i]<<' ';}cout<<endl;
+
   std::cout << "ap1" << '\n';
   for(int t=0;t<ap.size();t++){std::cout << ap[t]<<" ";}cout<<endl;
 
   brc=0;
+  cout<<"CTS:"<<cts<<endl;
+
   std::cout << "/* phase2 */" << '\n';
 
   for(int i=1;i<2*nor;i++){if(p[i][1]==0){break;}for(int j=1;j<2*nor;j++){p[i][j]=0;}}
   fap(graph,4, 6,  p,nor+1,f);
   ap=av_paths(p,nor+1,4,6,lro,lre,cts,src,brc,sr,br);
+  cout<<"ppppppp2:"<<mp(graph,p,ap,nor+1,&cts,ar)<<endl;
 
   std::cout << "ap2" << '\n';
 
